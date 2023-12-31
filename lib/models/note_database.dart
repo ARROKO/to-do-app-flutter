@@ -9,7 +9,7 @@ class NoteDatabase extends ChangeNotifier {
   // I N I T I A L I Z E - D A T A B A S E
   static Future<void> initialize() async {
     final dir = await getApplicationDocumentsDirectory();
-    await Isar.open(
+    isar = await Isar.open(
       [NoteSchema],
       directory: dir.path,
     );
