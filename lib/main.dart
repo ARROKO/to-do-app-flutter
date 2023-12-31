@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'pages/notes_pages.dart';
-
 void main() {
   runApp(const MyApp());
 }
@@ -21,3 +20,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
