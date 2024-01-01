@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:note/models/note_database.dart';
+import 'package:popover/popover.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import '../models/note_database.dart';
 import '../models/note.dart';
 
 class NotePages extends StatefulWidget {
@@ -87,6 +89,7 @@ class _NotePagesState extends State<NotePages> {
     List<Note> currentNotes = noteDatabase.currentNotes;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         title: const Text("Notes"),
       ),
@@ -95,27 +98,59 @@ class _NotePagesState extends State<NotePages> {
         onPressed: createNote,
         child: const Icon(Icons.add),
       ),
-      body: ListView.builder(
-          itemCount: currentNotes.length,
-          itemBuilder: (context, index) {
-            final note = currentNotes[index];
-            return ListTile(
-              title: Text(note.text),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    onPressed: () => updateNote(note),
-                    icon: const Icon(Icons.edit),
-                  ),
-                  IconButton(
-                    onPressed: () => deleteNote(note.id),
-                    icon: const Icon(Icons.delete),
-                  ),
-                ],
-              ),
-            );
-          }),
+      body: Column(
+        children: [
+          Text('Notes',style: Goo,),
+          Expanded(
+            child: ListView.builder(
+                itemCount: currentNotes.length,
+                itemBuilder: (context, index) {
+                  final note = currentNotes[index];
+                  return ListTile(
+                    title: Text(note.text),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () => updateNote(note),
+                          icon: const Icon(Icons.edit),
+                        ),
+                        IconButton(
+                          onPressed: () => deleteNote(note.id),
+                          icon: const Icon(Icons.delete),
+                        ),
+                      ],
+                    ),
+                    
+                  );
+                }),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ListItems extends StatelessWidget {
+  const ListItems({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          color: Colors.deepPurple[300],
+          height: 50,
+        ),
+        Container(
+          color: Colors.deepPurple[200],
+          height: 50,
+        ),
+        Container(
+          color: Colors.deepPurple[100],
+          height: 50,
+        ),
+      ],
     );
   }
 }

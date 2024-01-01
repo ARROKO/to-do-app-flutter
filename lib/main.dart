@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'pages/notes_pages.dart';
 import 'models/note_database.dart';
+import 'theme/theme_provider.dart';
 
 void main() async {
   // initialize note isae database
@@ -9,10 +10,16 @@ void main() async {
   await NoteDatabase.initialize();
 
   runApp(
-    ChangeNotifierProvider(
+    MultiProvider(providers: [
+      ChangeNotifierProvider(
       create: (context) => NoteDatabase(),
-      child: const MyApp(),
     ),
+      ChangeNotifierProvider(
+      create: (context) => ThemeProvider(),
+    ),
+    ],
+    child: const MyApp(),
+    ), 
   );
 }
 
@@ -25,10 +32,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: Provider.of<ThemeProvider>(context).themeData,
       home: const NotePages(),
     );
   }
