@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../models/note_database.dart';
 import '../models/note.dart';
+import '../widgets/drawer.dart';
 
 class NotePages extends StatefulWidget {
   const NotePages({super.key});
@@ -91,16 +92,22 @@ class _NotePagesState extends State<NotePages> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
         title: const Text("Notes"),
       ),
-      drawer: const Drawer(),
+      drawer: const MyDawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: createNote,
         child: const Icon(Icons.add),
       ),
       body: Column(
         children: [
-          Text('Notes',style: Goo,),
+          Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Text('Notes',style: GoogleFonts.dmSerifText(fontSize: 48,color: Theme.of(context).colorScheme.inversePrimary,),),
+          ),
           Expanded(
             child: ListView.builder(
                 itemCount: currentNotes.length,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'pages/notes_pages.dart';
 import 'models/note_database.dart';
+import 'pages/settings.dart';
 import 'theme/theme_provider.dart';
 
 void main() async {
@@ -34,6 +35,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: Provider.of<ThemeProvider>(context).themeData,
       home: const NotePages(),
+      routes: {
+        '/settings': (context)=> const Settings(),
+      },
     );
   }
 }
