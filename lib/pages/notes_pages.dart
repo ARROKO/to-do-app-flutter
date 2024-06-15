@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/note_database.dart';
 import '../models/note.dart';
 import '../widgets/drawer.dart';
+import 'edit_note.dart';
 
 class NotePages extends StatefulWidget {
   const NotePages({super.key});
@@ -52,28 +53,9 @@ class _NotePagesState extends State<NotePages> {
   }
 
   // update a notes
-  void updateNote(Note note) {
+  void updateNote(Note note, BuildContext context) {
     textController.text = note.text;
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Update Note'),
-            content: TextField(controller: textController),
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  // add to db
-                  context
-                      .read<NoteDatabase>()
-                      .updateNotes(note.id, textController.text);
-                  Navigator.pop(context);
-                },
-                child: const Text("Update"),
-              ),
-            ],
-          );
-        });
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Edit(note: note)));
   }
 
   // delete a note
@@ -95,42 +77,68 @@ class _NotePagesState extends State<NotePages> {
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        title: const Text("Notes"),
       ),
       drawer: const MyDawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: createNote,
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add,color: Theme.of(context).colorScheme.inversePrimary,),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.all(25.0),
-            child: Text('Notes',style: GoogleFonts.dmSerifText(fontSize: 48,color: Theme.of(context).colorScheme.inversePrimary,),),
+            child: Text(
+              'Notes',
+              style: GoogleFonts.dmSerifText(
+                fontSize: 48,
+                color: Theme.of(context).colorScheme.inversePrimary,
+              ),
+            ),
           ),
           Expanded(
-            child: ListView.builder(
-                itemCount: currentNotes.length,
-                itemBuilder: (context, index) {
-                  final note = currentNotes[index];
-                  return ListTile(
-                    title: Text(note.text),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          onPressed: () => updateNote(note),
-                          icon: const Icon(Icons.edit),
-                        ),
-                        IconButton(
-                          onPressed: () => deleteNote(note.id),
-                          icon: const Icon(Icons.delete),
-                        ),
-                      ],
-                    ),
-                    
-                  );
-                }),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: ListView.builder(
+                  itemCount: currentNotes.length,
+                  itemBuilder: (context, index) {
+                    final note = currentNotes[index];
+                    return Card(
+                      child: ListTile(
+                        title: Text(note.text),
+                        trailing: Builder(builder: (context) {
+                          return IconButton(
+                            onPressed: () {
+                              showPopover(
+                                context: context,
+                                bodyBuilder: (context) => ListItems(
+                                  edit: () => updateNote(note, context),
+                                  delete: () => deleteNote(note.id),
+                                ),
+                                onPop: () => print('Popover was popped!'),
+                                direction: PopoverDirection.bottom,
+                                width: 100,
+                                height: 100,
+                                arrowHeight: 15,
+                                arrowWidth: 30,
+                              );
+                            },
+                            icon: const Icon(Icons.more_vert),);
+                        }),
+                        // trailing: Row(
+                        //   mainAxisSize: MainAxisSize.min,
+                        //   children: [
+                        //     IconButton(
+                        //       onPressed: () => updateNote(note),
+                        //       icon: const Icon(Icons.edit),
+                        //     ),
+                            
+                        //   ],
+                        // ),
+                      ),
+                    );
+                  }),
+            ),
           ),
         ],
       ),
@@ -139,24 +147,22 @@ class _NotePagesState extends State<NotePages> {
 }
 
 class ListItems extends StatelessWidget {
-  const ListItems({super.key});
+  final VoidCallback edit;
+  final VoidCallback delete;
+  const ListItems({super.key, required this.edit, required this.delete});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          color: Colors.deepPurple[300],
-          height: 50,
-        ),
-        Container(
-          color: Colors.deepPurple[200],
-          height: 50,
-        ),
-        Container(
-          color: Colors.deepPurple[100],
-          height: 50,
-        ),
+        TextButton(onPressed: (){
+          Navigator.pop(context);
+          edit();
+          }, child: Text('Edit',style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),)),
+        TextButton(onPressed: (){
+          Navigator.pop(context);
+          delete();
+          }, child: Text('Delete',style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),)),
       ],
     );
   }
