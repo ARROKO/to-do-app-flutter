@@ -7,4 +7,9 @@ class Note {
   Id id = Isar.autoIncrement; // you can also use id = null to auto increment
   
   late String text;
+  DateTime? creationDate;
+
+  Note({required this.text, this.creationDate}) {
+    creationDate = DateTime.now();
+  }
 }

@@ -4,12 +4,13 @@ import 'pages/notes_pages.dart';
 import 'models/note_database.dart';
 import 'pages/settings.dart';
 import 'theme/theme_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   // initialize note isae database
   WidgetsFlutterBinding.ensureInitialized();
   await NoteDatabase.initialize();
-
+  SharedPreferences prefs = await SharedPreferences.getInstance();
   runApp(
     MultiProvider(providers: [
       ChangeNotifierProvider(
@@ -19,7 +20,10 @@ void main() async {
       create: (context) => ThemeProvider(),
     ),
     ],
+    child: ChangeNotifierProvider(
+    create: (context) => ThemeProvider(isDarkMode: prefs.getBool('isDarkMode')),
     child: const MyApp(),
+  ),
     ), 
   );
 }

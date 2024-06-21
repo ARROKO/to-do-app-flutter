@@ -22,7 +22,7 @@ class NoteDatabase extends ChangeNotifier {
   // C R E A T E - a note and save to db
   Future<void> addNote(String note) async {
     // create a new note object
-    final newNote = Note()..text = note;
+    final newNote = Note(text: note);
     // save to db
     await isar.writeTxn(() => isar.notes.put(newNote));
 
@@ -39,10 +39,11 @@ class NoteDatabase extends ChangeNotifier {
   }
 
   // U P D A T E - a note in db
-  Future<void> updateNotes(int id, String newText) async {
+  Future<void> updateNotes(int id, String newText, DateTime updateDate) async {
     final existingNotes = await isar.notes.get(id);
     if (existingNotes != null) {
       existingNotes.text = newText;
+      existingNotes.creationDate = updateDate;
       await isar.writeTxn(() => isar.notes.put(existingNotes));
       await fetchNotes();
     }
