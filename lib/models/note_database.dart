@@ -20,14 +20,15 @@ class NoteDatabase extends ChangeNotifier {
   final List<Note> currentNotes = [];
 
   // C R E A T E - a note and save to db
-  Future<void> addNote(String note) async {
+  Future<int> addNote(String note) async {
     // create a new note object
     final newNote = Note(text: note);
     // save to db
-    await isar.writeTxn(() => isar.notes.put(newNote));
+    int id = await isar.writeTxn(() => isar.notes.put(newNote));
 
     // re-read from db
     fetchNotes();
+    return id; // Retourne l'ID de la nouvelle note
   }
 
   // R E A D - notes from db

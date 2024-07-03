@@ -46,7 +46,7 @@ class _NotePagesState extends State<NotePages> {
                 onPressed: () {
                   // add to db
                   context.read<NoteDatabase>().updateNotes(
-                      note.id, textController.text, DateTime.now());
+                      note.id!, textController.text, DateTime.now());
                   Navigator.pop(context);
                 },
                 child: const Text("Update"),
@@ -81,7 +81,7 @@ class _NotePagesState extends State<NotePages> {
         backgroundColor: Theme.of(context).colorScheme.secondary,
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const ManagerNote()));
+              MaterialPageRoute(builder: (context) => ManagerNote()));
         },
         child: Icon(
           Icons.add,
@@ -137,7 +137,7 @@ class _NotePagesState extends State<NotePages> {
                                   bodyBuilder: (context) => ListItems(
                                     note: note,
                                     edit: () => updateNote(note),
-                                    delete: () => deleteNote(note.id),
+                                    delete: () => deleteNote(note.id!),
                                   ),
                                   direction: PopoverDirection.bottom,
                                   width: 100,
@@ -198,7 +198,7 @@ class ListItems extends StatelessWidget {
               'Copy',
               style: TextStyle(
                   color: Theme.of(context).colorScheme.inversePrimary),
-            )),
+            ),),
         TextButton(
             onPressed: () {
               Navigator.pop(context);
@@ -208,7 +208,7 @@ class ListItems extends StatelessWidget {
               'Delete',
               style: TextStyle(
                   color: Theme.of(context).colorScheme.inversePrimary),
-            )),
+            ),),
       ],
     );
   }

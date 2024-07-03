@@ -9,6 +9,9 @@ ThemeData lightMode = ThemeData(
     secondary: Colors.grey.shade400,
     inversePrimary: Colors.grey.shade800,
   ),
+  textSelectionTheme: TextSelectionThemeData(
+    cursorColor: Colors.grey.shade800,
+  ),
   useMaterial3: true,
 );
 
@@ -21,6 +24,9 @@ ThemeData darkMode = ThemeData(
     secondary: Color(0xFF6F6FC8),
     inversePrimary: Color(0xFFFCFCFC),
   ),
+  textSelectionTheme: const TextSelectionThemeData(
+    cursorColor: Color(0xFFFCFCFC),
+  ),
 );
 
 ThemeData mode1 = ThemeData(
@@ -31,6 +37,9 @@ ThemeData mode1 = ThemeData(
     primary: Color(0xFFDBB5B5),
     secondary: Color(0xFFC39898),
     inversePrimary: Color(0xFFFFFFFF),
+  ),
+  textSelectionTheme: const TextSelectionThemeData(
+    cursorColor: Color(0xFFFFFFFF),
   ),
 );
 

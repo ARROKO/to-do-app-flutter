@@ -7,7 +7,7 @@ import 'theme/theme_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
-  // initialize note isae database
+  // initialize note isar database
   WidgetsFlutterBinding.ensureInitialized();
   await NoteDatabase.initialize();
   SharedPreferences prefs = await SharedPreferences.getInstance();

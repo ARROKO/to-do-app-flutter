@@ -57,7 +57,7 @@ class _SettingsState extends State<Settings> {
                 child: Text(
                   'Grey',
                   style: TextStyle(
-                      color: Theme.of(context).colorScheme.inversePrimary),
+                      color: Theme.of(context).colorScheme.inversePrimary,),
                 ),
               ),
               ElevatedButton(
@@ -95,7 +95,6 @@ class _SettingsState extends State<Settings> {
                 ],
               ),
             ),
-            const Text('Policy',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
           ],
         ),
       ),
