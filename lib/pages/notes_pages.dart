@@ -20,6 +20,8 @@ class NotePages extends StatefulWidget {
 class _NotePagesState extends State<NotePages> {
   //tet controller to access what the user typed
   final textController = TextEditingController();
+  // State to track selected notes
+  final Set<int> selectedNotes = {};
 
   @override
   void initState() {
@@ -61,6 +63,23 @@ class _NotePagesState extends State<NotePages> {
     context.read<NoteDatabase>().deleteNotes(id);
   }
 
+  // delete multiple notes
+  void deleteSelectedNotes() {
+    for (var id in selectedNotes) {
+      context.read<NoteDatabase>().deleteNotes(id);
+    }
+    setState(() {
+      selectedNotes.clear();
+    });
+  }
+
+  // cancel multiple selection
+  void cancelSelection() {
+    setState(() {
+      selectedNotes.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // note database
@@ -74,17 +93,36 @@ class _NotePagesState extends State<NotePages> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
+        // leading: selectedNotes.isNotEmpty ? IconButton(
+        //   icon: const Icon(Icons.cancel),
+        //   onPressed: cancelSelection,
+        // ) : const SizedBox(),
         elevation: 0,
+        actions: selectedNotes.isNotEmpty
+            ? [
+                
+                selectedNotes.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: cancelSelection,
+                      )
+                    : const SizedBox(),
+              ]
+            : null,
       ),
-      drawer: const MyDawer(),
+      drawer: selectedNotes.isEmpty
+          ? const MyDawer()
+          : null, // Conditionally show the drawer
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.secondary,
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => ManagerNote()));
+          selectedNotes.isEmpty ?
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ManagerNote())) :
+              deleteSelectedNotes();
         },
         child: Icon(
-          Icons.add,
+          selectedNotes.isEmpty ? Icons.add : Icons.delete,
           color: Theme.of(context).colorScheme.inversePrimary,
         ),
       ),
@@ -108,15 +146,34 @@ class _NotePagesState extends State<NotePages> {
                   itemCount: currentNotes.length,
                   itemBuilder: (context, index) {
                     final note = currentNotes[index];
+                    bool isSelected = selectedNotes.contains(note.id);
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ManagerNote(note: note)));
+                        if (selectedNotes.isNotEmpty) {
+                          setState(() {
+                            if (isSelected) {
+                              selectedNotes.remove(note.id);
+                            } else {
+                              selectedNotes.add(note.id!);
+                            }
+                          });
+                        } else {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ManagerNote(note: note)));
+                        }
+                      },
+                      onLongPress: () {
+                        setState(() {
+                          selectedNotes.add(note.id!);
+                        });
                       },
                       child: Card(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.secondary
+                            : Theme.of(context).colorScheme.primary,
                         child: ListTile(
                           title: Text(
                             note.text,
@@ -127,33 +184,42 @@ class _NotePagesState extends State<NotePages> {
                                   Theme.of(context).colorScheme.inversePrimary,
                             ),
                           ),
-                          trailing: Builder(builder: (context) {
-                            return IconButton(
-                              onPressed: () {
-                                showPopover(
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.secondary,
-                                  context: context,
-                                  bodyBuilder: (context) => ListItems(
-                                    note: note,
-                                    edit: () => updateNote(note),
-                                    delete: () => deleteNote(note.id!),
-                                  ),
-                                  direction: PopoverDirection.bottom,
-                                  width: 100,
-                                  height: 100,
-                                  arrowHeight: 15,
-                                  arrowWidth: 30,
-                                );
-                              },
-                              icon: Icon(
-                                Icons.more_vert,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .inversePrimary,
-                              ),
-                            );
-                          }),
+                          trailing: selectedNotes.isEmpty
+                              ? Builder(builder: (context) {
+                                  return IconButton(
+                                    onPressed: () {
+                                      showPopover(
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        context: context,
+                                        bodyBuilder: (context) => ListItems(
+                                          note: note,
+                                          edit: () => updateNote(note),
+                                          delete: () => deleteNote(note.id!),
+                                        ),
+                                        direction: PopoverDirection.bottom,
+                                        width: 100,
+                                        height: 100,
+                                        arrowHeight: 15,
+                                        arrowWidth: 30,
+                                      );
+                                    },
+                                    icon: Icon(
+                                      Icons.more_vert,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .inversePrimary,
+                                    ),
+                                  );
+                                })
+                              : Checkbox(
+                                checkColor: Theme.of(context).colorScheme.inversePrimary,
+                                value: isSelected, onChanged: (value){
+                                setState(() {
+                                  isSelected = value!;
+                                });
+                              }),
                         ),
                       ),
                     );
@@ -181,34 +247,36 @@ class ListItems extends StatelessWidget {
     return Column(
       children: [
         TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Clipboard.setData(ClipboardData(text: note.text));
-              Fluttertoast.showToast(
-                msg: "Texte copié",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                textColor: Theme.of(context).colorScheme.inversePrimary,
-                fontSize: 16.0,
-              );
-            },
-            child: Text(
-              'Copy',
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.inversePrimary),
-            ),),
+          onPressed: () {
+            Navigator.pop(context);
+            Clipboard.setData(ClipboardData(text: note.text));
+            Fluttertoast.showToast(
+              msg: "Texte copié",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              textColor: Theme.of(context).colorScheme.inversePrimary,
+              fontSize: 16.0,
+            );
+          },
+          child: Text(
+            'Copy',
+            style:
+                TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
+          ),
+        ),
         TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              delete();
-            },
-            child: Text(
-              'Delete',
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.inversePrimary),
-            ),),
+          onPressed: () {
+            Navigator.pop(context);
+            delete();
+          },
+          child: Text(
+            'Delete',
+            style:
+                TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
+          ),
+        ),
       ],
     );
   }

@@ -16,23 +16,9 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-      //   actions: [
-      //   IconButton(
-      //     onPressed: () {
-      //       setState(() {
-      //         Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-      //         theme = !theme;
-      //       });
-      //     },
-      //     icon: !theme
-      //         ? const Icon(CupertinoIcons.moon_fill)
-      //         : const Icon(CupertinoIcons.sun_max),
-      //   ),
-      // ]
-      ),
+      appBar: AppBar(),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 50),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -44,58 +30,62 @@ class _SettingsState extends State<Settings> {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                    ),
-                onPressed: () {
-                  setState(() {
-                    Provider.of<ThemeProvider>(context, listen: false)
-                        .greyModeTheme();
-                  });
-                },
-                child: Text(
-                  'Grey',
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.inversePrimary,),
-                ),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                ),
-                onPressed: () {
-                  setState(() {
-                    Provider.of<ThemeProvider>(context, listen: false)
-                        .lightTheme();
-                  });
-                },
-                child: Text(
-                  'Light',
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.inversePrimary),
-                ),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                ),
-                onPressed: () {
-                  setState(() {
-                    Provider.of<ThemeProvider>(context, listen: false)
-                        .darkTheme();
-                  });
-                },
-                child: Text(
-                  'Dark',
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.inversePrimary),
-                ),
-              ),
+                  ThemeApp(
+                    color:const Color(0xFFF1E5D1),
+                    onTap: () {
+                      setState(() {
+                        Provider.of<ThemeProvider>(context, listen: false)
+                            .greyModeTheme();
+                      });
+                    },
+                  ),
+                  ThemeApp(
+                    color: Colors.grey.shade300,
+                    onTap: () {
+                      setState(() {
+                        Provider.of<ThemeProvider>(context, listen: false)
+                            .lightTheme();
+                      });
+                    },
+                  ),
+                  ThemeApp(
+                    color: const Color(0xFF1F1D2B),
+                    onTap: () {
+                      setState(() {
+                        Provider.of<ThemeProvider>(context, listen: false)
+                            .darkTheme();
+                      });
+                    },
+                  ),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ThemeApp extends StatelessWidget {
+  final Color color;
+  final VoidCallback onTap;
+  const ThemeApp({
+    super.key,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
       ),
     );

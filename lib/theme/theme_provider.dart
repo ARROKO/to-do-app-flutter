@@ -18,7 +18,7 @@ class ThemeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleTheme() async {
+  void toggleTheme(String theme) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (_themeData == lightMode) {
       themeData = darkMode;
@@ -27,15 +27,39 @@ class ThemeProvider with ChangeNotifier {
       themeData = lightMode;
       prefs.setBool('isDarkMode', false);
     }
+
+    switch (theme) {
+      case 'isDarkMode':
+        
+        break;
+      case 'isLightMode':
+
+        break;
+      case 'isGreyMode':
+
+        break;
+
+      default:
+      
+    }
+
   }
 
   void greyModeTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     themeData = mode1;
+    prefs.setString('selectedTheme', 'greyMode');
   }
+
   void lightTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     themeData = lightMode;
+    prefs.setString('selectedTheme', 'lightMode');
   }
+
   void darkTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     themeData = darkMode;
+    prefs.setString('selectedTheme', 'darkMode');
   }
 }
