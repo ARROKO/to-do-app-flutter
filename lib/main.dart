@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'pages/notes_pages.dart';
 import 'models/note_database.dart';
 import 'pages/settings.dart';
+import 'pages/speech.dart';
 import 'theme/theme_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,7 +39,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: Provider.of<ThemeProvider>(context).themeData,
-      home: const NotePages(),
+      home: const Speech(),
+      // home: const NotePages(),
       routes: {
         '/settings': (context)=> const Settings(),
       },
